@@ -27,7 +27,7 @@ yarn-error.log*
 # backend
 
 .DS_Store
-media
+uploads
 db.sqlite3
 settings_local.py
 *.sublime-project
