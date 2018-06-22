@@ -4,16 +4,25 @@ from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = models.User
         fields = (
+            'id',
             'username',
+            'password',
             'first_name',
             'last_name',
             'email',
             'date_joined',
-            'account',
         )
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -27,7 +36,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class AccountSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    followings = UserSerializer(many=True)
+    followings = UserSerializer(read_only=True, many=True)
 
     class Meta:
         model = models.Account

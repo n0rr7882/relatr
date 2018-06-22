@@ -1,6 +1,7 @@
 from rest_framework import (
     views,
     viewsets,
+    generics,
     permissions,
     pagination,
     status,
@@ -13,12 +14,18 @@ from . import permissions as account_permissions
 from . import models as account_models
 
 
-class UserView(viewsets.ModelViewSet):
-    queryset = account_models.User.objects.all().prefetch_related('account__followings')
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+class CreateUserView(generics.ListCreateAPIView):
+    queryset = account_models.User.objects.all()
+    permission_classes = (permissions.AllowAny,)
     pagination_class = pagination.LimitOffsetPagination
     serializer_class = account_serializers.UserSerializer
 
+
+class DetailUserView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = account_models.User.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = account_serializers.UserSerializer
+    
 
 class AccountView(viewsets.ModelViewSet):
     queryset = account_models.Account.objects.all()

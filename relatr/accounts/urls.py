@@ -2,17 +2,9 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views as account_views
 
-user_list = account_views.UserView.as_view({
-    'get': 'list',
-    'post': 'create',
-})
+user_list = account_views.CreateUserView.as_view()
 
-user_detail = account_views.UserView.as_view({
-    'get': 'retrieve',
-    'put': 'update',
-    'patch': 'partial_update',
-    'delete': 'destroy',
-})
+user_detail = account_views.DetailUserView.as_view()
 
 account_list = account_views.AccountView.as_view({
     'get': 'list',
