@@ -6,7 +6,14 @@ from . import models
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        fields = ('__all__',)
+        fields = (
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'date_joined',
+            'account',
+        )
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -19,9 +26,14 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
+    user = UserSerializer(read_only=True)
+    followings = UserSerializer(many=True)
 
     class Meta:
         model = models.Account
-        fields = ('__all__',)
-
+        fields = (
+            'user',
+            'thumbnail',
+            'created_at',
+            'followings',
+        )

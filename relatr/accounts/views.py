@@ -4,26 +4,40 @@ from rest_framework import (
     permissions,
     pagination,
     status,
-    response
+    response,
+    exceptions,
 )
-from . import serializers
+from django import shortcuts
+from . import serializers as account_serializers
+from . import permissions as account_permissions
+from . import models as account_models
 
 
 class UserView(viewsets.ModelViewSet):
+    queryset = account_models.User.objects.all().prefetch_related('account__followings')
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     pagination_class = pagination.LimitOffsetPagination
-    serializer_class = serializers.UserSerializer
+    serializer_class = account_serializers.UserSerializer
+
+
+class AccountView(viewsets.ModelViewSet):
+    queryset = account_models.Account.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    pagination_class = pagination.LimitOffsetPagination
+    serializer_class = account_serializers.AccountSerializer
 
 
 class UpdatePasswordView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    def get_object(self, pk):
+        return shortcuts.get_object_or_404(User, pk)
 
     def put(self, request, *args, **kwargs):
         self.object = self.get_object()
-        serializer = serializers.ChangePasswordSerializer(data=request.data)
+        serializer = account_serializers.ChangePasswordSerializer(
+            data=request.data
+        )
 
         if serializer.is_valid():
             old_password = serializer.data.get("old_password")
