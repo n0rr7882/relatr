@@ -26,6 +26,22 @@ class Account(models.Model):
     def __str__(self):
         return self.user.username
 
+    def follow_to(self, target):
+        follow_info, created = Follow.objects.get_or_create(
+            follower=self,
+            following=target.user,
+        )
+        follow_info.save()
+        return created
+
+    def unfollow_to(self, target):
+        follow_info, created = Follow.objects.get_or_create(
+            follower=self,
+            following=target.user,
+        )
+        follow_info.delete()
+        return not created
+
 
 class Follow(models.Model):
     follower = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -33,10 +49,9 @@ class Follow(models.Model):
     followed_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{} -> {} at {}'.format(
+        return '{} -> {}'.format(
             self.follower.user.username,
             self.following.username,
-            self.followed_at
         )
 
 
