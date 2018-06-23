@@ -25,7 +25,7 @@ class DetailUserView(generics.RetrieveUpdateDestroyAPIView):
     queryset = account_models.User.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = account_serializers.UserSerializer
-    
+
 
 class AccountView(viewsets.ModelViewSet):
     queryset = account_models.Account.objects.all()
@@ -41,7 +41,7 @@ class UpdatePasswordView(views.APIView):
         return shortcuts.get_object_or_404(User, pk)
 
     def put(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.object = request.user
         serializer = account_serializers.ChangePasswordSerializer(
             data=request.data
         )

@@ -5,6 +5,7 @@ from . import models
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = models.User
