@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from uuid import uuid4
-from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import signals
 
 
 def thumbnail_path(instance, filename):
@@ -15,11 +16,11 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     thumbnail = models.ImageField(blank=True, upload_to=thumbnail_path)
     created_at = models.DateTimeField(auto_now=True)
-    followings = models.ManyToManyField(
-        User,
+    follows = models.ManyToManyField(
+        'self',
         blank=True,
         through='Follow',
-        related_name='followers',
+        related_name='followed_to',
         symmetrical=False
     )
 
@@ -27,36 +28,60 @@ class Account(models.Model):
         return self.user.username
 
     def follow_to(self, target):
+        if self == target:
+            return False
+
         follow_info, created = Follow.objects.get_or_create(
             follower=self,
-            following=target.user,
+            following=target,
         )
         follow_info.save()
+
         return created
 
     def unfollow_to(self, target):
         follow_info, created = Follow.objects.get_or_create(
             follower=self,
-            following=target.user,
+            following=target,
         )
         follow_info.delete()
+
         return not created
+
+    def get_followings(self):
+        return self.follows.filter(followings__follower=self)
+
+    def get_followers(self):
+        return self.followed_to.filter(followers__following=self)
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey(Account, on_delete=models.CASCADE)
-    following = models.ForeignKey(User, on_delete=models.CASCADE)
+    follower = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        related_name='followers'
+    )
+    following = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        related_name='followings'
+    )
     followed_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return '{} -> {}'.format(
             self.follower.user.username,
-            self.following.username,
+            self.following.user.username,
         )
 
 
-def create_account(sender, **kwargs):
+@receiver(signals.post_save, sender=User)
+def create_account(sender, instance, **kwargs):
     if kwargs['created']:
-        user_account = Account.objects.create(user=kwargs['instance'])
+        Account.objects.create(user=instance)
 
-post_save.connect(create_account, sender=User)
+
+@receiver(signals.post_delete, sender=Account)
+def delete_user(sender, instance, *args, **kwargs):
+    if instance.user:
+        instance.user.delete()
