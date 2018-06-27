@@ -10,6 +10,12 @@ account_list = account_views.ListAccountView.as_view()
 
 account_detail = account_views.DetailAccountView.as_view()
 
+account_followings = account_views.AccountFollowingsView.as_view()
+
+account_followers = account_views.AccountFollowersView.as_view()
+
+change_password = account_views.ChangePasswordView.as_view()
+
 
 urlpatterns = format_suffix_patterns([
     url(
@@ -23,6 +29,11 @@ urlpatterns = format_suffix_patterns([
         name='user_detail'
     ),
     url(
+        r'^(?P<pk>[0-9]+)/follow/$',
+        account_views.FollowView.as_view(),
+        name='follow'
+    ),
+    url(
         r'^accounts/$',
         account_list,
         name='account_list'
@@ -33,13 +44,18 @@ urlpatterns = format_suffix_patterns([
         name='account_detail'
     ),
     url(
-        r'^follows/(?P<pk>[0-9]+)/$',
-        account_views.FollowView.as_view(),
-        name='follow'
+        r'^accounts/(?P<pk>[0-9]+)/followings/$',
+        account_followings,
+        name='account_followings'
+    ),
+    url(
+        r'^accounts/(?P<pk>[0-9]+)/followers/$',
+        account_followers,
+        name='account_followers'
     ),
     url(
         r'^change-password/$',
-        account_views.UpdatePasswordView.as_view(),
+        change_password,
         name='change_password'
     ),
 ])

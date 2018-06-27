@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import (
     ListCreateAPIView,
     ListAPIView,
+    RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
     GenericAPIView,
 )
@@ -36,36 +37,28 @@ from .models import (
 
 
 class CreateUserView(ListCreateAPIView):
-    queryset = User.objects.prefetch_related('account')
-    queryset = queryset.prefetch_related('followers').all()
-    permission_classes = (AllowAny,)
-    pagination_class = LimitOffsetPagination
+    queryset = User.objects.prefetch_related('account').all()
     serializer_class = UserSerializer
 
 
 class DetailUserView(RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.select_related('account')
-    queryset = queryset.prefetch_related('followers').all()
+    queryset = User.objects.select_related('account').all()
     permission_classes = (IsUserStaffOrThisObject,)
     serializer_class = UserSerializer
 
 
 class ListAccountView(ListAPIView):
-    queryset = Account.objects.select_related('user')
-    queryset = queryset.all()
-    permission_classes = (AllowAny,)
-    pagination_class = LimitOffsetPagination
+    queryset = Account.objects.select_related('user').all()
     serializer_class = AccountSerializer
 
 
 class DetailAccountView(RetrieveUpdateDestroyAPIView):
-    queryset = Account.objects.select_related('user')
-    queryset = queryset.prefetch_related('followings').all()
+    queryset = Account.objects.select_related('user').all()
     permission_classes = (IsUserStaffOrOwner,)
     serializer_class = AccountSerializer
 
 
-class UpdatePasswordView(APIView):
+class ChangePasswordView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def put(self, request, format=None):
@@ -77,11 +70,7 @@ class UpdatePasswordView(APIView):
 
             if not self.object.check_password(old_password):
                 return Response(
-                    {
-                        "old_password": [
-                            "Wrong password."
-                        ]
-                    },
+                    {"old_password": ["Wrong password."]},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -99,7 +88,7 @@ class FollowView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, pk):
-        return get_object_or_404(User, pk=pk)
+        return get_object_or_404(Account, pk=pk)
 
     def post(self, request, pk, format=None):
         if request.user.account.follow_to(self.get_object(pk)):
@@ -112,3 +101,45 @@ class FollowView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class AccountFollowingsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        context = {'request': request}
+        paginator = LimitOffsetPagination()
+
+        account = get_object_or_404(Account, pk=pk)
+        followers = account.get_followings()
+
+        results = paginator.paginate_queryset(followers, request)
+
+        serializer = AccountSerializer(
+            results,
+            many=True,
+            context={'request': request}
+        )
+
+        return Response(serializer.data)
+
+
+class AccountFollowersView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        context = {'request': request}
+        paginator = LimitOffsetPagination()
+
+        account = get_object_or_404(Account, pk=pk)
+        followers = account.get_followers()
+
+        results = paginator.paginate_queryset(followers, request)
+
+        serializer = AccountSerializer(
+            results,
+            many=True,
+            context={'request': request}
+        )
+
+        return Response(serializer.data)

@@ -32,7 +32,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'date_joined',
-            'followers',
         )
 
     def validate(self, data):
@@ -84,5 +83,4 @@ class AccountSerializer(serializers.ModelSerializer):
             'user',
             'thumbnail',
             'created_at',
-            'followings',
         )
