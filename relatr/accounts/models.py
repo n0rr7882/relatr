@@ -4,17 +4,34 @@ from uuid import uuid4
 from django.dispatch import receiver
 from django.db.models import signals
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import Thumbnail
+
 
 def thumbnail_path(instance, filename):
-    directory = instance.user.username
+    directory = instance.user.id
     name = uuid4()
     extension = filename.split('.')[-1]
-    return 'thumbnails/{}/{}.{}'.format(directory, name, extension)
+    return 'users/{}/thumbnails/{}.{}'.format(directory, name, extension)
+
+
+def banner_path(instance, filename):
+    directory = instance.user.id
+    name = uuid4()
+    extension = filename.split('.')[-1]
+    return 'users/{}/banners/{}.{}'.format(directory, name, extension)
 
 
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    thumbnail = models.ImageField(blank=True, upload_to=thumbnail_path)
+    thumbnail = ProcessedImageField(
+        blank=True,
+        upload_to=thumbnail_path,
+        processors=[Thumbnail(300, 300)],
+        options={'quality': 60},
+        format='JPEG',
+    )
+    banner = models.ImageField(blank=True, upload_to=banner_path)
     created_at = models.DateTimeField(auto_now=True)
     follows = models.ManyToManyField(
         'self',

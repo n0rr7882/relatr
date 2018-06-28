@@ -121,7 +121,7 @@ class AccountFollowingsView(APIView):
             context={'request': request}
         )
 
-        return Response(serializer.data)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class AccountFollowersView(APIView):
@@ -142,4 +142,4 @@ class AccountFollowersView(APIView):
             context={'request': request}
         )
 
-        return Response(serializer.data)
+        return paginator.get_paginated_response(serializer.data)

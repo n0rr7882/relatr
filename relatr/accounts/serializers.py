@@ -15,7 +15,11 @@ class UserSerializer(serializers.ModelSerializer):
     )
     thumbnail = serializers.ImageField(
         source='account.thumbnail',
-        read_only=True
+        read_only=True,
+    )
+    banner = serializers.ImageField(
+        source='account.banner',
+        read_only=True,
     )
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
@@ -26,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'thumbnail',
+            'banner',
             'username',
             'password',
             'first_name',
@@ -82,5 +87,6 @@ class AccountSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'thumbnail',
+            'banner',
             'created_at',
         )
