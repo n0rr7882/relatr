@@ -25,6 +25,7 @@ def banner_path(instance, filename):
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     thumbnail = ProcessedImageField(
+        null=True,
         blank=True,
         upload_to=thumbnail_path,
         processors=[Thumbnail(300, 300)],
@@ -35,6 +36,7 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     follows = models.ManyToManyField(
         'self',
+        null=True,
         blank=True,
         through='Follow',
         related_name='followed_to',

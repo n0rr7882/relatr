@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'relatr.accounts.apps.AccountsConfig',
-    'relatr.feeds.apps.FeedsConfig',
+    'relatr.chains.apps.ChainsConfig',
     'relatr.notifications.apps.NotificationsConfig',
 ]
 
