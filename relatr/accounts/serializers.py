@@ -9,7 +9,7 @@ from . import models
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        style={'input_type': 'hidden'},
+        style={'input_type': 'password'},
         write_only=True,
         required=False,
     )
@@ -36,6 +36,11 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
+            'date_joined',
+        )
+        read_only_fields = (
+            'thumbnail',
+            'banner',
             'date_joined',
         )
 
@@ -88,5 +93,10 @@ class AccountSerializer(serializers.ModelSerializer):
             'user',
             'thumbnail',
             'banner',
+            'created_at',
+        )
+        read_only_fields = (
+            'id',
+            'user',
             'created_at',
         )

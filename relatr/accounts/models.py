@@ -33,7 +33,7 @@ class Account(models.Model):
         format='JPEG',
     )
     banner = models.ImageField(blank=True, upload_to=banner_path)
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     follows = models.ManyToManyField(
         'self',
         null=True,
@@ -85,7 +85,7 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='followings'
     )
-    followed_at = models.DateTimeField(auto_now=True)
+    followed_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{} -> {}'.format(

@@ -7,7 +7,7 @@ from django.db.models import signals
 
 
 def chain_image_path(instance, filename):
-    directory = instance.user.id
+    directory = instance.account.user.id
     name = uuid4()
     extension = filename.split('.')[-1]
     return 'users/{}/chains/{}.{}'.format(directory, name, extension)
@@ -40,6 +40,7 @@ class Chain(models.Model):
         related_name='mentioned_to',
         symmetrical=False
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'No.{}'.format(self.id)
@@ -113,7 +114,7 @@ class ChainMention(models.Model):
         on_delete=models.CASCADE,
         related_name='mentioned_account'
     )
-    mentioned_at = models.DateTimeField(auto_now=True)
+    mentioned_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{} mentioned in chain No.{}'.format(
