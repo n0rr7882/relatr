@@ -58,3 +58,11 @@ class CreateChainView(ListCreateAPIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class DetailChainView(RetrieveUpdateDestroyAPIView):
+    queryset = Chain.objects.select_related('account__user')
+    queryset = queryset.prefetch_related('tags')
+    queryset = queryset.prefetch_related('mentions').all()
+    permission_classes = (IsUserStaffOrOwner,)
+    serializer_class = ChainSerializer
