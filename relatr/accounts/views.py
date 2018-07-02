@@ -106,7 +106,6 @@ class AccountFollowingsView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk, format=None):
-        context = {'request': request}
         paginator = LimitOffsetPagination()
 
         account = get_object_or_404(Account, pk=pk)
