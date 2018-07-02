@@ -19,6 +19,10 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+
+from accounts.models import Account
+from accounts.serializers import AccountSerializer
+
 from .serializers import (
     ChainSerializer,
     ChainTagSerializer,
@@ -32,6 +36,8 @@ from .models import (
     ChainTag,
     ChainMention
 )
+
+import re
 
 
 class CreateChainView(ListCreateAPIView):
@@ -68,7 +74,7 @@ class DetailChainView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChainSerializer
 
 
-class CreateTagView(APIView):
+class ChainTagView(APIView):
     permission_classes = (IsUserStaffOrOwner,)
 
     def get_object(self, pk):
@@ -76,34 +82,32 @@ class CreateTagView(APIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def post(self, request, pk, format=None):
+    def post(self, request, pk, tag_text, format=None):
         chain = self.get_object(pk)
-        serializer = ChainTagSerializer(data=request.data)
+        tag_pattern = re.compile(r'^[^\s`~!@#$%^&*()+=-]{2,}$')
+        if not tag_pattern.match(tag_text):
+            return Response({
+                'tag_text': [
+                    'This field must satisfy the condition of '
+                    'the regex "^[^\s`~!@#$%^&*()+=-]{2,}$".'
+                ]
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-        if serializer.is_valid():
-            if chain.add_tag(serializer.data.get('tag')):
-                return Response(status=status.HTTP_201_CREATED)
-            else:
-                return Response(status=status.HTTP_409_CONFLICT)
+        if chain.add_tag(tag_text):
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_409_CONFLICT)
 
-        return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    def get(self, request, pk, format=None):
-        paginator = LimitOffsetPagination()
-
+    def delete(self, request, pk, tag_text, format=None):
         chain = self.get_object(pk)
-        tags = chain.get_tags()
 
-        results = paginator.paginate_queryset(tags, request)
-        serializer = ChainTagSerializer(results, many=True)
+        if chain.remove_tag(tag_text):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        return paginator.get_paginated_response(serializer.data)
 
-
-class DetailTagView(APIView):
+class ChainMentionView(APIView):
     permission_classes = (IsUserStaffOrOwner,)
 
     def get_object(self, pk):
@@ -111,19 +115,20 @@ class DetailTagView(APIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def get(self, request, pk, tag, format=None):
+    def post(self, request, pk, account_pk, format=None):
         chain = self.get_object(pk)
-        results = chain.tags.get(tag=tag)
+        target = get_object_or_404(Account, pk=account_pk)
 
-        return Response({
-            'chain': results.chain_id,
-            'tag': results.tag
-        }, status=status.HTTP_200_OK)
+        if chain.mention_to(target):
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_409_CONFLICT)
 
-    def delete(self, request, pk, tag, format=None):
+    def delete(self, request, pk, account_pk, format=None):
         chain = self.get_object(pk)
+        target = get_object_or_404(Account, pk=account_pk)
 
-        if chain.remove_tag(tag):
+        if chain.cancel_mention_to(target):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
