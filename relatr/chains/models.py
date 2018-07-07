@@ -116,6 +116,9 @@ class Chain(models.Model):
     def get_liked_accounts(self):
         return self.likes.filter(liked_accounts__chain=self)
 
+    def get_child_chains(self):
+        return self.child_chains.all()
+
 
 class ChainTag(models.Model):
     chain = models.ForeignKey(

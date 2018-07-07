@@ -69,9 +69,59 @@ class CreateChainView(ListCreateAPIView):
 class DetailChainView(RetrieveUpdateDestroyAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
-    queryset = queryset.prefetch_related('mentions__user').all()
+    queryset = queryset.prefetch_related('mentions__user')
+    queryset = queryset.prefetch_related('likes__user').all()
     permission_classes = (IsUserStaffOrOwner,)
     serializer_class = ChainSerializer
+
+
+class ParentChainView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, pk):
+        obj = get_object_or_404(Chain, pk=pk)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def get(self, request, pk, format=None):
+        chain = self.get_object(pk)
+        parent_chain = chain.parent_chain
+
+        serializer = ChainSerializer(
+            parent_chain,
+            context={'request': request}
+        )
+
+        return Response(serializer.data)
+
+
+class ChildChainView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, pk):
+        obj = get_object_or_404(Chain, pk=pk)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def get(self, request, pk, format=None):
+        paginator = LimitOffsetPagination()
+
+        chain = self.get_object(pk)
+        child_chains = chain.get_child_chains()
+        child_chains = child_chains.select_related('account__user')
+        child_chains = child_chains.prefetch_related('tags')
+        child_chains = child_chains.prefetch_related('mentions__user')
+        child_chains = child_chains.prefetch_related('likes__user').all()
+
+        results = paginator.paginate_queryset(child_chains, request)
+
+        serializer = ChainSerializer(
+            results,
+            many=True,
+            context={'request': request}
+        )
+
+        return paginator.get_paginated_response(serializer.data)
 
 
 class ChainTagView(APIView):

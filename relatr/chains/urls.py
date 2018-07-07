@@ -12,6 +12,10 @@ mention_create_delete = chain_views.ChainMentionView.as_view()
 
 like_create_delete = chain_views.ChainLikeView.as_view()
 
+parent_chain_detail = chain_views.ParentChainView.as_view()
+
+child_chain_list = chain_views.ChildChainView.as_view()
+
 
 urlpatterns = format_suffix_patterns([
     url(
@@ -23,6 +27,16 @@ urlpatterns = format_suffix_patterns([
         r'^(?P<pk>[0-9]+)/$',
         chain_detail,
         name='chain_detail'
+    ),
+    url(
+        r'^(?P<pk>[0-9]+)/parent-chain/$',
+        parent_chain_detail,
+        name='parent_chain_detail'
+    ),
+    url(
+        r'^(?P<pk>[0-9]+)/child-chains/$',
+        child_chain_list,
+        name='child_chain_list'
     ),
     url(
         r'^(?P<pk>[0-9]+)/tag/(?P<tag_text>[^\s]+)/$',
