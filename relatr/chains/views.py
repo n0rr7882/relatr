@@ -25,7 +25,6 @@ from accounts.serializers import AccountSerializer
 
 from .serializers import (
     ChainSerializer,
-    ChainTagSerializer,
 )
 from .permissions import (
     IsUserStaffOrOwner,
@@ -43,7 +42,8 @@ import re
 class CreateChainView(ListCreateAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
-    queryset = queryset.prefetch_related('mentions').all()
+    queryset = queryset.prefetch_related('mentions__user')
+    queryset = queryset.prefetch_related('likes__user').all()
     permission_classes = (IsAuthenticated,)
     serializer_class = ChainSerializer
 
@@ -69,7 +69,7 @@ class CreateChainView(ListCreateAPIView):
 class DetailChainView(RetrieveUpdateDestroyAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
-    queryset = queryset.prefetch_related('mentions').all()
+    queryset = queryset.prefetch_related('mentions__user').all()
     permission_classes = (IsUserStaffOrOwner,)
     serializer_class = ChainSerializer
 
@@ -129,6 +129,33 @@ class ChainMentionView(APIView):
         target = get_object_or_404(Account, pk=account_pk)
 
         if chain.cancel_mention_to(target):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class ChainLikeView(APIView):
+    permission_classes = (IsUserStaffOrOwner,)
+
+    def get_object(self, pk):
+        obj = get_object_or_404(Chain, pk=pk)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def post(self, request, pk, account_pk, format=None):
+        chain = self.get_object(pk)
+        account = get_object_or_404(Account, pk=account_pk)
+
+        if chain.liked_from(account):
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_409_CONFLICT)
+
+    def delete(self, request, pk, account_pk, foramt=None):
+        chain = get_object_or_404(Chain, pk=pk)
+        account = get_object_or_404(Account, pk=account_pk)
+
+        if chain.unliked_from(account):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

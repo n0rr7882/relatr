@@ -1,3 +1,12 @@
 from django.contrib import admin
+from .models import (
+    Chain,
+    ChainMention,
+    ChainTag,
+    ChainLike,
+)
 
-# Register your models here.
+admin.site.register(Chain)
+admin.site.register(ChainMention)
+admin.site.register(ChainTag)
+admin.site.register(ChainLike)

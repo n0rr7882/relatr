@@ -14,30 +14,18 @@ from accounts.serializers import (
 )
 
 
-class ChainTagSerializer(serializers.ModelSerializer):
-    tag = serializers.RegexField(
-        r'^[^\s`~!@#$%^&*()+=-]{2,}$',
-        required=True
-    )
-
-    class Meta:
-        model = ChainTag
-        fields = (
-            'chain',
-            'tag',
-        )
-        read_only_fields = (
-            'chain',
-        )
-
-
 class ChainSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
-    tags = ChainTagSerializer(
+    tags = serializers.SlugRelatedField(
+        slug_field='tag',
+        many=True,
+        read_only=True
+    )
+    mentions = AccountSerializer(
         many=True,
         read_only=True,
     )
-    mentions = AccountSerializer(
+    likes = AccountSerializer(
         many=True,
         read_only=True,
     )
@@ -45,11 +33,14 @@ class ChainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chain
         fields = (
+            'id',
             'account',
             'text',
             'image',
             'tags',
             'mentions',
+            'likes',
+            'parent_chain',
         )
         extra_kwargs = {
             'account': {'write_only': True}

@@ -40,6 +40,14 @@ class Chain(models.Model):
         related_name='mentioned_to',
         symmetrical=False
     )
+    likes = models.ManyToManyField(
+        Account,
+        null=True,
+        blank=True,
+        through='ChainLike',
+        related_name='like_to',
+        symmetrical=False
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -85,7 +93,28 @@ class Chain(models.Model):
         return not created
 
     def get_mentioned_accounts(self):
-        return self.mentions.filter(mentioned_account__chain=self)
+        return self.mentions.filter(mentioned_accounts__chain=self)
+
+    def liked_from(self, account):
+        like, created = ChainLike.objects.get_or_create(
+            chain=self,
+            account=account
+        )
+        like.save()
+
+        return created
+
+    def unliked_from(self, account):
+        like, created = ChainLike.objects.get_or_create(
+            chain=self,
+            account=account
+        )
+        like.delete()
+
+        return not created
+
+    def get_liked_accounts(self):
+        return self.likes.filter(liked_accounts__chain=self)
 
 
 class ChainTag(models.Model):
@@ -112,12 +141,32 @@ class ChainMention(models.Model):
     account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
-        related_name='mentioned_account'
+        related_name='mentioned_accounts'
     )
     mentioned_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '{} mentioned in chain No.{}'.format(
+            self.account.user.username,
+            self.chain.id
+        )
+
+
+class ChainLike(models.Model):
+    chain = models.ForeignKey(
+        Chain,
+        on_delete=models.CASCADE,
+        related_name='chains_liked'
+    )
+    account = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        related_name='liked_accounts'
+    )
+    liked_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{} liked chain No.{}'.format(
             self.account.user.username,
             self.chain.id
         )
