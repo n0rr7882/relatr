@@ -4,6 +4,8 @@ from . import views as chain_views
 
 chain_create_list = chain_views.CreateChainView.as_view()
 
+chain_timeline_list = chain_views.TimelineChainView.as_view()
+
 chain_detail = chain_views.DetailChainView.as_view()
 
 tag_create_delete = chain_views.ChainTagView.as_view()
@@ -22,6 +24,11 @@ urlpatterns = format_suffix_patterns([
         r'^$',
         chain_create_list,
         name='chain_create_list'
+    ),
+    url(
+        r'^timeline/$',
+        chain_timeline_list,
+        name='chain_timeline_list'
     ),
     url(
         r'^(?P<pk>[0-9]+)/$',

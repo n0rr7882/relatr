@@ -119,6 +119,9 @@ class Chain(models.Model):
     def get_child_chains(self):
         return self.child_chains.all()
 
+    class Meta:
+        ordering = ('-created_at',)
+
 
 class ChainTag(models.Model):
     chain = models.ForeignKey(
@@ -154,6 +157,9 @@ class ChainMention(models.Model):
             self.chain.id
         )
 
+    class Meta:
+        ordering = ('-mentioned_at',)
+
 
 class ChainLike(models.Model):
     chain = models.ForeignKey(
@@ -173,3 +179,7 @@ class ChainLike(models.Model):
             self.account.user.username,
             self.chain.id
         )
+
+    class Meta:
+        ordering = ('-liked_at',)
+

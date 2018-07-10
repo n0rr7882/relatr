@@ -66,6 +66,34 @@ class CreateChainView(ListCreateAPIView):
         )
 
 
+class TimelineChainView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        self.check_permissions(self.request)
+        return self.request.user.account
+
+    def get(self, request, format=None):
+        paginator = LimitOffsetPagination()
+
+        followings = self.get_object().get_followings()
+        chains = Chain.objects.select_related('account__user')
+        chains = chains.prefetch_related('tags')
+        chains = chains.prefetch_related('mentions__user')
+        chains = chains.prefetch_related('likes__user')
+        chains = chains.filter(account__in=followings)
+
+        results = paginator.paginate_queryset(chains, request)
+
+        serializer = ChainSerializer(
+            results,
+            many=True,
+            context={'request': request}
+        )
+
+        return paginator.get_paginated_response(serializer.data)
+
+
 class DetailChainView(RetrieveUpdateDestroyAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
