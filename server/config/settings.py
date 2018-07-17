@@ -63,7 +63,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(os.path.join(CLIENT_DIR), 'dist/client'),
+            os.path.join(CLIENT_DIR, 'build'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,13 +129,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+  os.path.join(CLIENT_DIR, 'build/static'),
+]
+
 MEDIA_URL = '/public/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
-
-CLIENT_URL = '/'
-
-CLIENT_ROOT = os.path.join(CLIENT_DIR, 'dist/client')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
