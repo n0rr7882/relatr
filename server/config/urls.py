@@ -23,7 +23,7 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('relatr.urls')),
-    url(r'', TemplateView.as_view(template_name='index.html')),
+    url(r'^', TemplateView.as_view(template_name='index.html')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -43,7 +43,8 @@ class CreateChainView(ListCreateAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
     queryset = queryset.prefetch_related('mentions__user')
-    queryset = queryset.prefetch_related('likes__user').all()
+    queryset = queryset.prefetch_related('likes__user')
+    queryset = queryset.prefetch_related('child_chains').all()
     permission_classes = (IsAuthenticated,)
     serializer_class = ChainSerializer
 
@@ -81,6 +82,7 @@ class TimelineChainView(APIView):
         chains = chains.prefetch_related('tags')
         chains = chains.prefetch_related('mentions__user')
         chains = chains.prefetch_related('likes__user')
+        chains = chains.prefetch_related('child_chains')
         chains = chains.filter(account__in=followings)
 
         results = paginator.paginate_queryset(chains, request)
@@ -98,7 +100,8 @@ class DetailChainView(RetrieveUpdateDestroyAPIView):
     queryset = Chain.objects.select_related('account__user')
     queryset = queryset.prefetch_related('tags')
     queryset = queryset.prefetch_related('mentions__user')
-    queryset = queryset.prefetch_related('likes__user').all()
+    queryset = queryset.prefetch_related('likes__user')
+    queryset = queryset.prefetch_related('child_chains').all()
     permission_classes = (IsUserStaffOrOwner,)
     serializer_class = ChainSerializer
 
@@ -139,7 +142,8 @@ class ChildChainView(APIView):
         child_chains = child_chains.select_related('account__user')
         child_chains = child_chains.prefetch_related('tags')
         child_chains = child_chains.prefetch_related('mentions__user')
-        child_chains = child_chains.prefetch_related('likes__user').all()
+        child_chains = child_chains.prefetch_related('likes__user')
+        child_chains = child_chains.prefetch_related('child_chains').all()
 
         results = paginator.paginate_queryset(child_chains, request)
 

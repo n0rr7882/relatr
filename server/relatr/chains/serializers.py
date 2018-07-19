@@ -41,6 +41,11 @@ class ChainSerializer(serializers.ModelSerializer):
             'mentions',
             'likes',
             'parent_chain',
+            'child_chains',
+            'created_at',
+        )
+        read_only_fields = (
+            'child_chains',
         )
         extra_kwargs = {
             'account': {'write_only': True}
