@@ -35,7 +35,7 @@ export default class Chain extends Component {
                     <Button color='blue' text='Follow' />
                 </div>
                 <div className='chain-content'>
-                    {chain.text}
+                    <p dangerouslySetInnerHTML={{ __html: chain.text }} />
                 </div>
                 <div className='chain-date'>
                     <TimeAgo date={chain.created_at} />

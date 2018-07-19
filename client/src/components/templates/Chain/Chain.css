@@ -22,7 +22,7 @@
     justify-content: center;
 }
 
-.chain-extend > * {
+.chain-extend>* {
     flex: 1;
 }
 
@@ -33,22 +33,31 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
- }
+}
 
- /* chain card content */
+/* chain card content */
 
 .chain-content {
     padding: 10px;
-    font-size: larger;
- }
+}
 
- /* chain card image */
+.chain-content>p {
+    margin: 0;
+    font-size: larger;
+}
+
+.chain-content>p a {
+    color: rgb(53, 131, 233);
+    font-weight: bolder;
+}
+
+/* chain card image */
 
 .chain-image {
     padding: 10px;
 }
 
-.chain-image > img {
+.chain-image>img {
     width: 100%;
     border-radius: 10px;
 }

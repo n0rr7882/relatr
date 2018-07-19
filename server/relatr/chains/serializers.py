@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Chain,
+    Hashtag,
     ChainTag,
     ChainMention,
 )
@@ -14,10 +15,19 @@ from accounts.serializers import (
 )
 
 
+class HashtagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Hashtag
+        fields = (
+            'id',
+            'name',
+        )
+
+
 class ChainSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True)
-    tags = serializers.SlugRelatedField(
-        slug_field='tag',
+    tags = HashtagSerializer(
         many=True,
         read_only=True
     )

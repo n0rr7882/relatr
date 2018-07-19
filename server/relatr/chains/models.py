@@ -5,6 +5,8 @@ from uuid import uuid4
 from django.dispatch import receiver
 from django.db.models import signals
 
+import re
+
 
 def chain_image_path(instance, filename):
     directory = instance.account.user.id
@@ -32,6 +34,14 @@ class Chain(models.Model):
         blank=True,
         upload_to=chain_image_path
     )
+    tags = models.ManyToManyField(
+        'Hashtag',
+        null=True,
+        blank=True,
+        through='ChainTag',
+        related_name='tagged_to',
+        symmetrical=False
+    )
     mentions = models.ManyToManyField(
         Account,
         null=True,
@@ -53,26 +63,21 @@ class Chain(models.Model):
     def __str__(self):
         return 'No.{}'.format(self.id)
 
-    def add_tag(self, text):
-        tag, created = ChainTag.objects.get_or_create(
-            chain=self,
-            tag=text
-        )
-        tag.save()
+    def save_tags(self):
+        tags = re.findall(r'#(\w+)\b', self.text)
+        
+        for t in tags:
+            tag, created = Hashtag.objects.get_or_create(name=t)
+            relation, created = ChainTag.objects.get_or_create(
+                chain=self,
+                hashtag=tag
+            )
+            relation.save()
 
-        return created
-
-    def remove_tag(self, text):
-        tag, created = ChainTag.objects.get_or_create(
-            chain=self,
-            tag=text
-        )
-        tag.delete()
-
-        return not created
+        return
 
     def get_tags(self):
-        return self.tags.all()
+        return self.tags.filter(included_tags__chain=self)
 
     def mention_to(self, target):
         mention, created = ChainMention.objects.get_or_create(
@@ -123,17 +128,28 @@ class Chain(models.Model):
         ordering = ('-created_at',)
 
 
+class Hashtag(models.Model):
+    name = models.CharField(max_length=144)
+
+    def __str__(self):
+        return self.name
+
+
 class ChainTag(models.Model):
     chain = models.ForeignKey(
         Chain,
         on_delete=models.CASCADE,
-        related_name='tags'
+        related_name='chains_tagged'
     )
-    tag = models.CharField(max_length=144)
+    hashtag = models.ForeignKey(
+        Hashtag,
+        on_delete=models.CASCADE,
+        related_name='included_tags'
+    )
 
     def __str__(self):
-        return '"{}" in chain No.{}'.format(
-            self.tag,
+        return '{} tagged in chain No.{}'.format(
+            self.hashtag.name,
             self.chain.id
         )
 
@@ -183,3 +199,7 @@ class ChainLike(models.Model):
     class Meta:
         ordering = ('-liked_at',)
 
+
+@receiver(signals.post_save, sender=Chain)
+def save_tags(sender, instance, **kwargs):
+    instance.save_tags()

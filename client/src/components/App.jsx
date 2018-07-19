@@ -29,7 +29,7 @@ export default class App extends Component {
                 "banner": "http://localhost:8000/public/users/1/banners/fe6adcbb-f2fd-45e1-83b9-ba48e34d15bd.jpeg",
                 "created_at": "2018-06-29T05:40:10.930443Z"
             },
-            "text": "jkjjjjjjj",
+            "text": "#asdf #asdfffff\n ㅁㄴㅇㄹㅁㄴㅇㄹ\n #안녕",
             "image": null,
             "tags": [
                 "안녕",
