@@ -17,24 +17,29 @@ export default class App extends Component {
                 "id": 1,
                 "user": {
                     "id": 1,
-                    "thumbnail": "http://localhost:8000/public/users/1/thumbnails/14a709a4-f4cc-4d23-b683-6219f8757233.jpeg",
-                    "banner": "http://localhost:8000/public/users/1/banners/fe6adcbb-f2fd-45e1-83b9-ba48e34d15bd.jpeg",
+                    "thumbnail": null,
+                    "banner": null,
                     "username": "norr",
                     "first_name": "Dongho",
                     "last_name": "Yu",
                     "email": "n0rr7882@gmail.com",
-                    "date_joined": "2018-06-29T05:35:02.753770Z"
+                    "date_joined": "2018-07-19T06:00:31.103179Z"
                 },
-                "thumbnail": "http://localhost:8000/public/users/1/thumbnails/14a709a4-f4cc-4d23-b683-6219f8757233.jpeg",
-                "banner": "http://localhost:8000/public/users/1/banners/fe6adcbb-f2fd-45e1-83b9-ba48e34d15bd.jpeg",
-                "created_at": "2018-06-29T05:40:10.930443Z"
+                "thumbnail": null,
+                "banner": null,
+                "created_at": "2018-07-19T06:00:31.224239Z"
             },
-            "text": "#asdf #asdfffff\n ㅁㄴㅇㄹㅁㄴㅇㄹ\n #안녕",
+            "text": "#이것은 #태그\r\n입**니**다. @test",
             "image": null,
             "tags": [
-                "안녕",
-                "asdfffff",
-                "asdf"
+                {
+                    "id": 1,
+                    "name": "이것은"
+                },
+                {
+                    "id": 6,
+                    "name": "태그"
+                }
             ],
             "mentions": [
                 {
@@ -43,56 +48,21 @@ export default class App extends Component {
                         "id": 2,
                         "thumbnail": null,
                         "banner": null,
-                        "username": "test1",
-                        "first_name": "FN",
-                        "last_name": "LN",
+                        "username": "test",
+                        "first_name": "Harry",
+                        "last_name": "Lee",
                         "email": "test1@gmail.com",
-                        "date_joined": "2018-06-29T05:39:18.993960Z"
+                        "date_joined": "2018-07-20T03:16:03.788796Z"
                     },
                     "thumbnail": null,
                     "banner": null,
-                    "created_at": "2018-06-29T05:39:19.123021Z"
-                },
-                {
-                    "id": 4,
-                    "user": {
-                        "id": 4,
-                        "thumbnail": null,
-                        "banner": null,
-                        "username": "test3",
-                        "first_name": "F3",
-                        "last_name": "L3",
-                        "email": "test3@gmail.com",
-                        "date_joined": "2018-06-29T05:39:42.312320Z"
-                    },
-                    "thumbnail": null,
-                    "banner": null,
-                    "created_at": "2018-06-29T05:39:42.450048Z"
+                    "created_at": "2018-07-20T03:16:03.920303Z"
                 }
             ],
-            "likes": [
-                {
-                    "id": 2,
-                    "user": {
-                        "id": 2,
-                        "thumbnail": null,
-                        "banner": null,
-                        "username": "test1",
-                        "first_name": "FN",
-                        "last_name": "LN",
-                        "email": "test1@gmail.com",
-                        "date_joined": "2018-06-29T05:39:18.993960Z"
-                    },
-                    "thumbnail": null,
-                    "banner": null,
-                    "created_at": "2018-06-29T05:39:19.123021Z"
-                }
-            ],
+            "likes": [],
             "parent_chain": null,
-            "child_chains": [
-                15
-            ],
-            "created_at": "2018-06-29T05:51:21.500437Z"
+            "child_chains": [],
+            "created_at": "2018-07-19T06:01:04.765431Z"
         }
     };
 

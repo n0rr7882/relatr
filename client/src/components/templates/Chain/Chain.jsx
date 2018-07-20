@@ -7,6 +7,7 @@ import ClipWithThumb from '../../../lib/ClipWithThumb';
 import Button from '../../../lib/Button';
 import IconButton from '../../../lib/IconButton';
 
+import { render } from '../../../utils/chain-render';
 
 import './Chain.css';
 
@@ -16,8 +17,16 @@ export default class Chain extends Component {
         chain: PropTypes.object.isRequired,
     }
 
+    state = {
+        chain: this.props.chain
+    };
+
+    componentDidMount() {
+        render(this.props.chain).then(chain => this.setState({ chain }));
+    }
+
     render() {
-        const chain = this.props.chain;
+        const chain = this.state.chain;
         return (
             <div className='chain'>
                 {chain.parent_chain ? (
