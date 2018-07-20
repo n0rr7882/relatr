@@ -65,7 +65,7 @@ class Chain(models.Model):
 
     def save_tags(self):
         tags = re.findall(r'#(\w+)\b', self.text)
-        
+
         for t in tags:
             tag, created = Hashtag.objects.get_or_create(name=t)
             relation, created = ChainTag.objects.get_or_create(
