@@ -79,23 +79,20 @@ class Chain(models.Model):
     def get_tags(self):
         return self.tags.filter(included_tags__chain=self)
 
-    def mention_to(self, target):
-        mention, created = ChainMention.objects.get_or_create(
-            chain=self,
-            account=target
-        )
-        mention.save()
+    def save_mentions(self):
+        mentions = re.findall(r'@(\w+)\b', self.text)
 
-        return created
+        for m in mentions:
+            ms = self.account.get_followings().filter(user__username=m)
 
-    def cancel_mention_to(self, target):
-        mention, created = ChainMention.objects.get_or_create(
-            chain=self,
-            account=target
-        )
-        mention.delete()
+            if len(ms) != 0:
+                mention, created = ChainMention.objects.get_or_create(
+                    chain=self,
+                    account=ms[0]
+                )
+                mention.save()
 
-        return not created
+        return
 
     def get_mentioned_accounts(self):
         return self.mentions.filter(mentioned_accounts__chain=self)
@@ -203,3 +200,4 @@ class ChainLike(models.Model):
 @receiver(signals.post_save, sender=Chain)
 def save_tags(sender, instance, **kwargs):
     instance.save_tags()
+    instance.save_mentions()

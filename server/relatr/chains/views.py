@@ -156,66 +156,6 @@ class ChildChainView(APIView):
         return paginator.get_paginated_response(serializer.data)
 
 
-class ChainTagView(APIView):
-    permission_classes = (IsUserStaffOrOwner,)
-
-    def get_object(self, pk):
-        obj = get_object_or_404(Chain, pk=pk)
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def post(self, request, pk, tag_text, format=None):
-        chain = self.get_object(pk)
-        tag_pattern = re.compile(r'^[^\s`~!@#$%^&*()+=-]{2,}$')
-        if not tag_pattern.match(tag_text):
-            return Response({
-                'tag_text': [
-                    'This field must satisfy the condition of '
-                    'the regex "^[^\s`~!@#$%^&*()+=-]{2,}$".'
-                ]
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        if chain.add_tag(tag_text):
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_409_CONFLICT)
-
-    def delete(self, request, pk, tag_text, format=None):
-        chain = self.get_object(pk)
-
-        if chain.remove_tag(tag_text):
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-class ChainMentionView(APIView):
-    permission_classes = (IsUserStaffOrOwner,)
-
-    def get_object(self, pk):
-        obj = get_object_or_404(Chain, pk=pk)
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def post(self, request, pk, account_pk, format=None):
-        chain = self.get_object(pk)
-        target = get_object_or_404(Account, pk=account_pk)
-
-        if chain.mention_to(target):
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_409_CONFLICT)
-
-    def delete(self, request, pk, account_pk, format=None):
-        chain = self.get_object(pk)
-        target = get_object_or_404(Account, pk=account_pk)
-
-        if chain.cancel_mention_to(target):
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-
 class ChainLikeView(APIView):
     permission_classes = (IsUserStaffOrOwner,)
 

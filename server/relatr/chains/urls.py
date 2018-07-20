@@ -8,10 +8,6 @@ chain_timeline_list = chain_views.TimelineChainView.as_view()
 
 chain_detail = chain_views.DetailChainView.as_view()
 
-tag_create_delete = chain_views.ChainTagView.as_view()
-
-mention_create_delete = chain_views.ChainMentionView.as_view()
-
 like_create_delete = chain_views.ChainLikeView.as_view()
 
 parent_chain_detail = chain_views.ParentChainView.as_view()
@@ -44,16 +40,6 @@ urlpatterns = format_suffix_patterns([
         r'^(?P<pk>[0-9]+)/child-chains/$',
         child_chain_list,
         name='child_chain_list'
-    ),
-    url(
-        r'^(?P<pk>[0-9]+)/tag/(?P<tag_text>[^\s]+)/$',
-        tag_create_delete,
-        name='tag_create_delete'
-    ),
-    url(
-        r'^(?P<pk>[0-9]+)/mention/(?P<account_pk>[0-9]+)/$',
-        mention_create_delete,
-        name='mention_create_delete'
     ),
     url(
         r'^(?P<pk>[0-9]+)/like/(?P<account_pk>[0-9]+)/$',
