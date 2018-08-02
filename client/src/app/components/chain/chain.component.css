@@ -1,0 +1,8 @@
+.fdr {
+    display: flex;
+    flex-direction: row;
+}
+
+.card {
+    border: none;
+}

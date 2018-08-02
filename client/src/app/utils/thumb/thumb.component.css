@@ -1,0 +1,10 @@
+.thumbnail {
+    height: 40px;
+    width: 40px;
+    border-radius: .25rem;
+    background: #606c88;
+     background: -webkit-linear-gradient(to bottom, #606c88, #3f4c6b);
+    background: linear-gradient(to bottom, #606c88, #3f4c6b);
+    background-position: center;
+    background-size: cover;
+}

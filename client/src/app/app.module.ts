@@ -1,14 +1,60 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 
 import { AppComponent } from './app.component';
 
+// pages
+import { TimelineComponent } from './pages/timeline/timeline.component';
+import { ChainDetailComponent } from './pages/chain-detail/chain-detail.component';
+
+// components
+import { ChainComponent } from './components/chain/chain.component';
+import { ExtendedChainComponent } from './components/extended-chain/extended-chain.component';
+import { NavComponent } from './components/nav/nav.component';
+
+// utils
+import { ThumbComponent } from './utils/thumb/thumb.component';
+import { ClipComponent } from './utils/clip/clip.component';
+
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
+    // pages
+    TimelineComponent,
+    ChainDetailComponent,
+
+    // components
+    ChainComponent,
+    ExtendedChainComponent,
+    NavComponent,
+
+    // utils
+    ThumbComponent,
+    ClipComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule,
+
+    // bootstrap
+    ButtonsModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    AlertModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot(),
+    TooltipModule.forRoot(),
+    ProgressbarModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

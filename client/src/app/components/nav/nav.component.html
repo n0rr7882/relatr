@@ -1,0 +1,35 @@
+<!-- Just an image -->
+<nav class="navbar navbar-dark bg-dark fixed-top">
+  <div class="btn-group">
+    <button class="btn btn-outline-light">
+      <i class="fas fa-newspaper"></i>
+    </button>
+    <button class="btn btn-outline-light">
+      <i class="fas fa-home"></i>
+    </button>
+  </div>
+  <a class="navbar-brand" href="#">
+    <img src="/assets/images/logos/relatr-icon-white.png" width="30" height="30" alt="">
+  </a>
+  <div class="btn-group" dropdown>
+    <button class="btn btn-success">
+      <i class="fas fa-bell"></i>
+    </button>
+    <button class="btn btn-outline-success">
+      <i class="fas fa-pen-nib"></i>
+    </button>
+    <button id="user-button" dropdownToggle type="button" class="btn btn-outline-success dropdown-toggle" aria-controls="dropdown-user">
+      <i class="fas fa-user"></i>
+      <span class="caret"></span>
+    </button>
+    <ul id="dropdown-user" *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="user-button">
+      <li role="menuitem">
+        <a class="dropdown-item" href="#">프로필</a>
+      </li>
+      <li class="divider dropdown-divider"></li>
+      <li role="menuitem">
+        <a class="dropdown-item text-red" href="#">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>

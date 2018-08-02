@@ -1,0 +1,9 @@
+.chain-list {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.chain-wrapper {
+    margin: 10px;
+}

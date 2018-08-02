@@ -1,0 +1,25 @@
+
+.clip {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+}
+
+.clip > .info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.clip > .info > .title {
+    margin: 0;
+    font-size: large;
+}
+
+.clip > .info > .description {
+    margin: 0;
+    font-size: small;
+    color: #aaaaaa;
+}

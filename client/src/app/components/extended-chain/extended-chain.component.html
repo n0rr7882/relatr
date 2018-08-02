@@ -1,0 +1,80 @@
+<div class="card text-white bg-dark">
+
+  <!-- load more -->
+  <div class="card-header">
+    <button type="button" class="btn btn-secondary btn-lg btn-block">
+      <i class="fas fa-ellipsis-h"></i>
+    </button>
+  </div>
+
+  <!-- parent chains -->
+  <div class="card-group parent-chain-list">
+    <app-chain *ngFor="let i of [1,2,3,4,5]"></app-chain>
+  </div>
+
+  <!-- user info -->
+  <div class="card-body fdr">
+    <app-clip title="유 동호" description="@sbladbujadk" imagePath="/assets/images/test-profile.jpg"></app-clip>
+    <div class="spacer"></div>
+    <button type="button" class="btn btn-primary">
+      <i class="fas fa-user-plus"></i>
+    </button>
+  </div>
+
+  <!-- content of this chain -->
+  <div class="card-body">
+    <p class="card-title">Special title treatment</p>
+    <p class="card-text">With supporting
+      <a href="#">#text</a> below as a natural lead-in to additional content.</p>
+    <img class="card-img" src="/assets/images/test-image.jpg" alt="">
+
+  </div>
+
+  <!-- actions of this chain -->
+  <div class="card-body fdr">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-secondary">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button type="button" class="btn btn-secondary">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-primary">
+        <i class="fas fa-heart"></i> 30
+      </button>
+      <button type="button" class="btn btn-secondary">
+        <i class="fas fa-retweet"></i> 30
+      </button>
+    </div>
+  </div>
+
+  <!-- comment form -->
+  <div class="card-body">
+    <form>
+      <div class="input-group">
+        <input type="text" class="form-control bg-dark text-white" placeholder="Leave a comment">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-comment-alt"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- child chains -->
+  <div class="card-group parent-chain-list">
+    <app-chain *ngFor="let i of [1,2,3,4,5]"></app-chain>
+  </div>
+
+  <!-- load more -->
+  <div class="card-footer">
+    <button type="button" class="btn btn-secondary btn-lg btn-block">
+      <i class="fas fa-ellipsis-h"></i>
+    </button>
+  </div>
+
+</div>
