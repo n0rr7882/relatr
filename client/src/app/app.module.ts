@@ -17,9 +17,9 @@ import { TimelineComponent } from './pages/timeline/timeline.component';
 import { ChainDetailComponent } from './pages/chain-detail/chain-detail.component';
 
 // components
+import { NavComponent } from './components/nav/nav.component';
 import { ChainComponent } from './components/chain/chain.component';
 import { ExtendedChainComponent } from './components/extended-chain/extended-chain.component';
-import { NavComponent } from './components/nav/nav.component';
 
 // utils
 import { ThumbComponent } from './utils/thumb/thumb.component';
@@ -35,9 +35,9 @@ import { ClipComponent } from './utils/clip/clip.component';
     ChainDetailComponent,
 
     // components
+    NavComponent,
     ChainComponent,
     ExtendedChainComponent,
-    NavComponent,
 
     // utils
     ThumbComponent,
