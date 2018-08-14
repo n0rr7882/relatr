@@ -155,6 +155,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 2 ** 16,
 }
 
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+}
+
 # allow cors
 
 CORS_ORIGIN_ALLOW_ALL = True
